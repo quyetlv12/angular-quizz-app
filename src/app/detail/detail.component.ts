@@ -1,18 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-import { ModalDirective } from '../../node_modules/ngx-bootstrap';
-import { QuestionClass } from './question-class';
-
-
-
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { ModalDirective } from "ngx-bootstrap";
+import { ToastrService } from "ngx-toastr";
+import { QuestionClass } from "../question-class";
+import { QuestionService } from './../question.service';
 
 @Component({
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.css']
+  selector: "app-detail",
+  templateUrl: "./detail.component.html",
+  styleUrls: ["./detail.component.css"],
 })
-export class AppComponent implements OnInit {
-	isQuestionCardShow: boolean = false;
+export class DetailComponent implements OnInit {
+  isQuestionCardShow: boolean = false;
 	totalAnswered: number = 0;
 	rightAnswer: number;
 	questionObj = new QuestionClass();
@@ -22,39 +21,18 @@ export class AppComponent implements OnInit {
 	@ViewChild('questionForm') questionForm: any;
 	@ViewChild('questionTest') questionTest : any;
 
-	constructor( private toastr: ToastrService) { }
+	constructor( private toastr: ToastrService , private questionService : QuestionService , private route: ActivatedRoute) { }
 
 	answerArray = [];
 
-	allQuestions: any = [{
-		"id": 1,
-		"question": "day la cau hoi",
-		"a": "viet nam",
-		"b": "quang tri",
-		"c": "hihi",
-		"d": "12",
-		"answer": "d"
-	},
-	{
-		"id": 2,
-		"question": "What is the capital of Australia?",
-		"a": "Vienna",
-		"b": "Canberra",
-		"c": "Brussels",
-		"d": "Prague",
-		"answer": "b"
-	},
-	{
-		"id": 3,
-		"question": "What is the capital of Bulgaria?",
-		"a": "Vienna",
-		"b": "Sofia",
-		"c": "Brussels",
-		"d": "Prague",
-		"answer": "b"
-	}
-	];
-
+	allQuestions: any = [];
+  getAllQuestion(){
+    this.route.params.subscribe(params =>{
+      this.questionService.getQuestion(params.id).subscribe(data => this.allQuestions = data
+        )
+    })
+    
+  }
 	/**Method call on submit the test */
 	submitTest() {
 		this.rightAnswer = 0;
@@ -104,9 +82,6 @@ export class AppComponent implements OnInit {
 	}
 
 	ngOnInit() {
-
-
-
+    this.getAllQuestion()
 	}
-
 }
